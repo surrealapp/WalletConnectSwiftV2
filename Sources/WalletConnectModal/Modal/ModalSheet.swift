@@ -126,7 +126,7 @@ public struct ModalSheet: View {
                 viewModel.destination
             }, set: { _ in }),
             navigateTo: viewModel.navigateTo(_:),
-            onListingTap: { viewModel.onListingTap($0) }
+            onWalletTap: { viewModel.onWalletTap($0) }
         )
     }
     

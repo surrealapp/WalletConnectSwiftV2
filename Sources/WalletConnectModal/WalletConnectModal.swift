@@ -34,6 +34,9 @@ public class WalletConnectModal {
     }()
     
     struct Config {
+        static let sdkVersion: String = EnvironmentInfo.sdkVersion
+        static let sdkType = "wcm"
+        
         let projectId: String
         var metadata: AppMetadata
         var sessionParams: SessionParams

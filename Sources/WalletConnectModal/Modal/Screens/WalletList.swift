@@ -1,11 +1,11 @@
 import SwiftUI
 
 struct WalletList: View {
-    @Binding var wallets: [Listing]
+    @Binding var wallets: [Wallet]
     @Binding var destination: Destination
     
     var navigateTo: (Destination) -> Void
-    var onListingTap: (Listing) -> Void
+    var onWalletTap: (Wallet) -> Void
     
     @State var numberOfColumns = 4
     
@@ -155,7 +155,7 @@ struct WalletList: View {
     }
     
     @ViewBuilder
-    func gridItem(for wallet: Listing) -> some View {
+    func gridItem(for wallet: Wallet) -> some View {
         VStack {
             WalletImage(wallet: wallet)
                 .frame(width: 60, height: 60)
@@ -171,7 +171,7 @@ struct WalletList: View {
                 .multilineTextAlignment(.center)
             
             Text(wallet.lastTimeUsed != nil ? "RECENT" : "INSTALLED")
-                .opacity(wallet.lastTimeUsed != nil || wallet.installed ? 1 : 0)
+                .opacity(wallet.lastTimeUsed != nil || wallet.isInstalled ? 1 : 0)
                 .font(.system(size: 10))
                 .foregroundColor(.foreground3)
                 .padding(.horizontal, 12)
@@ -183,7 +183,7 @@ struct WalletList: View {
                 
                 // Small delay to let detail screen present before actually deeplinking
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    onListingTap(wallet)
+                    onWalletTap(wallet)
                 }
             }
         }
