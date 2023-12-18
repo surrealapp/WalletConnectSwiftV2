@@ -21,7 +21,7 @@ struct WCSession: SequenceObject, Equatable {
     private(set) var sessionProperties: [String: String]?
 
     static var defaultTimeToLive: Int64 {
-        Int64(7*Time.day)
+        Int64(60*Time.day)
     }
     // for expirable...
     var publicKey: String? {
