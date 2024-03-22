@@ -12,7 +12,7 @@ public protocol SignClientProtocol {
     var sessionResponsePublisher: AnyPublisher<Response, Never> { get }
     var sessionRejectionPublisher: AnyPublisher<(Session.Proposal, Reason), Never> { get }
     var sessionEventPublisher: AnyPublisher<(event: Session.Event, sessionTopic: String, chainId: Blockchain?), Never> { get }
-    var authRequestPublisher: AnyPublisher<(request: AuthenticationRequest, context: VerifyContext?), Never> { get }
+    var authenticateRequestPublisher: AnyPublisher<(request: AuthenticationRequest, context: VerifyContext?), Never> { get }
     var logsPublisher: AnyPublisher<Log, Never> {get}
     var sessionProposalExpirationPublisher: AnyPublisher<Session.Proposal, Never> { get }
     var pendingProposalsPublisher: AnyPublisher<[(proposal: Session.Proposal, context: VerifyContext?)], Never> { get }
@@ -36,7 +36,7 @@ public protocol SignClientProtocol {
     func cleanup() async throws
     
     func getPendingRequests(topic: String?) -> [(request: Request, context: VerifyContext?)]
-    func getPendingAuthRequests() throws -> [(WalletConnectSign.AuthenticationRequest, VerifyContext?)] 
+    func getPendingAuthRequests() throws -> [(AuthenticationRequest, VerifyContext?)]
     func getPendingProposals(topic: String?) -> [(proposal: Session.Proposal, context: VerifyContext?)]
 }
 

@@ -25,7 +25,7 @@ public class AuthClient: AuthClientProtocol {
     ///
     /// Emited result may be an error.
     @available(*, deprecated, message: "Use SignClient for dApps and Web3Wallet interface for wallets instead.")
-    public var authResponsePublisher: AnyPublisher<(id: RPCID, result: Result<Cacao, AuthError>), Never> {
+    public var authResponsePublisher: AnyPublisher<(id: RPCID, result: Result<Cacao, AuthErrors>), Never> {
         authResponsePublisherSubject.eraseToAnyPublisher()
     }
 
@@ -40,19 +40,19 @@ public class AuthClient: AuthClientProtocol {
 
     private let pairingRegisterer: PairingRegisterer
 
-    private var authResponsePublisherSubject = PassthroughSubject<(id: RPCID, result: Result<Cacao, AuthError>), Never>()
+    private var authResponsePublisherSubject = PassthroughSubject<(id: RPCID, result: Result<Cacao, AuthErrors>), Never>()
     private var authRequestPublisherSubject = PassthroughSubject<(request: AuthRequest, context: VerifyContext?), Never>()
     private let appRequestService: AppRequestService
     private let appRespondSubscriber: AppRespondSubscriber
     private let walletRequestSubscriber: WalletRequestSubscriber
     private let walletRespondService: WalletRespondService
-    private let pendingRequestsProvider: PendingRequestsProvider
+    private let pendingRequestsProvider: Auth_PendingRequestsProvider
 
     init(appRequestService: AppRequestService,
          appRespondSubscriber: AppRespondSubscriber,
          walletRequestSubscriber: WalletRequestSubscriber,
          walletRespondService: WalletRespondService,
-         pendingRequestsProvider: PendingRequestsProvider,
+         pendingRequestsProvider: Auth_PendingRequestsProvider,
          logger: ConsoleLogging,
          socketConnectionStatusPublisher: AnyPublisher<SocketConnectionStatus, Never>,
          pairingRegisterer: PairingRegisterer
@@ -102,8 +102,8 @@ public class AuthClient: AuthClientProtocol {
     }
 
     @available(*, deprecated, message: "Use SignClient or Web3Wallet for message formatting.")
-    public func formatMessage(payload: AuthPayload, address: String) throws -> String {
-        return try SIWECacaoFormatter().formatMessage(from: payload.cacaoPayload(address: address))
+    public func formatMessage(payload: AuthPayloadStruct, address: String) throws -> String {
+        return try SIWEFromCacaoPayloadFormatter().formatMessage(from: payload.cacaoPayload(address: address))
     }
 
     private func setUpPublishers() {

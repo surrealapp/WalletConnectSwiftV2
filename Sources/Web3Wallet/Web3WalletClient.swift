@@ -27,7 +27,7 @@ public class Web3WalletClient {
     ///
     /// Wallet should subscribe on events in order to receive auth requests.
     public var authenticateRequestPublisher: AnyPublisher<(request: AuthenticationRequest, context: VerifyContext?), Never> {
-        signClient.authRequestPublisher.eraseToAnyPublisher()
+        signClient.authenticateRequestPublisher.eraseToAnyPublisher()
     }
     
     /// Publisher that sends sessions on every sessions update
@@ -197,7 +197,7 @@ public class Web3WalletClient {
         signClient.getSessions()
     }
     
-    public func formatAuthMessage(payload: WalletConnectSign.AuthPayload, account: Account) throws -> String {
+    public func formatAuthMessage(payload: AuthPayload, account: Account) throws -> String {
         try signClient.formatAuthMessage(payload: payload, account: account)
     }
 

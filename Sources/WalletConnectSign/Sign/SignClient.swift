@@ -100,8 +100,14 @@ public final class SignClient: SignClientProtocol {
     /// Publisher that sends authentication requests
     ///
     /// Wallet should subscribe on events in order to receive auth requests.
-    public var authRequestPublisher: AnyPublisher<(request: AuthenticationRequest, context: VerifyContext?), Never> {
-        authRequestPublisherSubject.eraseToAnyPublisher()
+    public var authenticateRequestPublisher: AnyPublisher<(request: AuthenticationRequest, context: VerifyContext?), Never> {
+        return authRequestPublisherSubject
+            .handleEvents(receiveSubscription: { [unowned self] _ in
+                authRequestSubscribersTracking.increment()
+            }, receiveCancel: { [unowned self] in
+                authRequestSubscribersTracking.decrement()
+            })
+            .eraseToAnyPublisher()
     }
 
     /// Publisher that sends authentication responses
@@ -175,6 +181,7 @@ public final class SignClient: SignClientProtocol {
     private let pingResponsePublisherSubject = PassthroughSubject<String, Never>()
     private let sessionsPublisherSubject = PassthroughSubject<[Session], Never>()
     private var authRequestPublisherSubject = PassthroughSubject<(request: AuthenticationRequest, context: VerifyContext?), Never>()
+    private let authRequestSubscribersTracking: AuthRequestSubscribersTracking
 
     private var publishers = Set<AnyCancellable>()
 
@@ -204,7 +211,8 @@ public final class SignClient: SignClientProtocol {
          proposalExpiryWatcher: ProposalExpiryWatcher,
          pendingProposalsProvider: PendingProposalsProvider,
          requestsExpiryWatcher: RequestsExpiryWatcher,
-         authResponseTopicResubscriptionService: AuthResponseTopicResubscriptionService
+         authResponseTopicResubscriptionService: AuthResponseTopicResubscriptionService,
+         authRequestSubscribersTracking: AuthRequestSubscribersTracking
     ) {
         self.logger = logger
         self.networkingClient = networkingClient
@@ -231,6 +239,7 @@ public final class SignClient: SignClientProtocol {
         self.pendingProposalsProvider = pendingProposalsProvider
         self.requestsExpiryWatcher = requestsExpiryWatcher
         self.authResponseTopicResubscriptionService = authResponseTopicResubscriptionService
+        self.authRequestSubscribersTracking = authRequestSubscribersTracking
 
         setUpConnectionObserving()
         setUpEnginesCallbacks()
@@ -348,11 +357,12 @@ public final class SignClient: SignClientProtocol {
     }
 
     public func formatAuthMessage(payload: AuthPayload, account: Account) throws -> String {
-        return try SIWECacaoFormatter().formatMessage(from: payload.cacaoPayload(account: account), includeRecapInTheStatement: true)
+        let cacaoPayload = try CacaoPayloadBuilder.makeCacaoPayload(authPayload: payload, account: account)
+        return try SIWEFromCacaoPayloadFormatter().formatMessage(from: cacaoPayload)
     }
 
-    public func buildSignedAuthObject(authPayload: AuthPayload, signature: WalletConnectUtils.CacaoSignature, account: Account) throws -> AuthObject {
-        try CacaosProvider().makeCacao(authPayload: authPayload, signature: signature, account: account)
+    public func buildSignedAuthObject(authPayload: AuthPayload, signature: CacaoSignature, account: Account) throws -> AuthObject {
+        try CacaosBuilder.makeCacao(authPayload: authPayload, signature: signature, account: account)
     }
 
     public func buildAuthPayload(payload: AuthPayload, supportedEVMChains: [Blockchain], supportedMethods: [String]) throws -> AuthPayload {
