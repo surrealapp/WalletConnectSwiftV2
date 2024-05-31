@@ -1,11 +1,22 @@
 import Foundation
 
-public final class RPCHistory {
+public protocol RPCHistoryProtocol {
+    
+    func deleteAll(forTopic topic: String)
+    
+    func deleteAll(forTopics topics: [String])
+}
+
+public final class RPCHistory: RPCHistoryProtocol {
 
     public struct Record: Codable {
         public enum Origin: String, Codable {
             case local
             case remote
+        }
+        public enum TransportType: Codable {
+            case relay
+            case linkMode
         }
         public let id: RPCID
         public let topic: String
@@ -13,6 +24,7 @@ public final class RPCHistory {
         public let request: RPCRequest
         public let response: RPCResponse?
         public var timestamp: Date?
+        public let transportType: TransportType?
     }
 
     enum HistoryError: Error, LocalizedError {
@@ -50,14 +62,14 @@ public final class RPCHistory {
         try? storage.get(key: recordId.string)
     }
 
-    public func set(_ request: RPCRequest, forTopic topic: String, emmitedBy origin: Record.Origin, time: TimeProvider = DefaultTimeProvider()) throws {
+    public func set(_ request: RPCRequest, forTopic topic: String, emmitedBy origin: Record.Origin, time: TimeProvider = DefaultTimeProvider(), transportType: RPCHistory.Record.TransportType) throws {
         guard let id = request.id else {
             throw HistoryError.unidentifiedRequest
         }
         guard get(recordId: id) == nil else {
             throw HistoryError.requestDuplicateNotAllowed
         }
-        let record = Record(id: id, topic: topic, origin: origin, request: request, response: nil, timestamp: time.currentDate)
+        let record = Record(id: id, topic: topic, origin: origin, request: request, response: nil, timestamp: time.currentDate, transportType: transportType)
         storage.set(record, forKey: "\(record.id)")
     }
 
@@ -144,3 +156,17 @@ extension RPCHistory {
         }
     }
 }
+
+#if DEBUG
+class MockRPCHistory: RPCHistoryProtocol {
+    var deletedTopics: [String] = []
+    
+    func deleteAll(forTopic topic: String) {
+        deletedTopics.append(topic)
+    }
+
+    func deleteAll(forTopics topics: [String]) {
+        deletedTopics.append(contentsOf: topics)
+    }
+}
+#endif

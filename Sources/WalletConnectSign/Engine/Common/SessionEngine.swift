@@ -8,7 +8,6 @@ final class SessionEngine {
 
     var onSessionsUpdate: (([Session]) -> Void)?
     var onSessionResponse: ((Response) -> Void)?
-    var onSessionRejected: ((String, SessionType.Reason) -> Void)?
     var onSessionDelete: ((String, SessionType.Reason) -> Void)?
     var onEventReceived: ((String, Session.Event, Blockchain?) -> Void)?
 
@@ -19,23 +18,25 @@ final class SessionEngine {
 
     private let sessionStore: WCSessionStorage
     private let networkingInteractor: NetworkInteracting
-    private let historyService: HistoryService
+    private let historyService: HistoryServiceProtocol
     private let verifyContextStore: CodableStore<VerifyContext>
     private let verifyClient: VerifyClientProtocol
     private let kms: KeyManagementServiceProtocol
     private var publishers = [AnyCancellable]()
     private let logger: ConsoleLogging
     private let sessionRequestsProvider: SessionRequestsProvider
+    private let invalidRequestsSanitiser: InvalidRequestsSanitiser
 
     init(
         networkingInteractor: NetworkInteracting,
-        historyService: HistoryService,
+        historyService: HistoryServiceProtocol,
         verifyContextStore: CodableStore<VerifyContext>,
         verifyClient: VerifyClientProtocol,
         kms: KeyManagementServiceProtocol,
         sessionStore: WCSessionStorage,
         logger: ConsoleLogging,
-        sessionRequestsProvider: SessionRequestsProvider
+        sessionRequestsProvider: SessionRequestsProvider,
+        invalidRequestsSanitiser: InvalidRequestsSanitiser
     ) {
         self.networkingInteractor = networkingInteractor
         self.historyService = historyService
@@ -45,6 +46,7 @@ final class SessionEngine {
         self.sessionStore = sessionStore
         self.logger = logger
         self.sessionRequestsProvider = sessionRequestsProvider
+        self.invalidRequestsSanitiser = invalidRequestsSanitiser
 
         setupConnectionSubscriptions()
         setupRequestSubscriptions()
@@ -52,8 +54,15 @@ final class SessionEngine {
         setupUpdateSubscriptions()
         setupExpirationSubscriptions()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-            sessionRequestsProvider.emitRequestIfPending()
+            self?.sessionRequestsProvider.emitRequestIfPending()
         }
+
+        removeInvalidSessionRequests()
+    }
+
+    private func removeInvalidSessionRequests() {
+        let sessionTopics = Set(sessionStore.getAll().map(\.topic))
+        invalidRequestsSanitiser.removeInvalidSessionRequests(validSessionTopics: sessionTopics)
     }
 
     func hasSession(for topic: String) -> Bool {
@@ -62,54 +71,6 @@ final class SessionEngine {
     
     func getSessions() -> [Session] {
         sessionStore.getAll().map { $0.publicRepresentation() }
-    }
-
-    func request(_ request: Request) async throws {
-        logger.debug("will request on session topic: \(request.topic)")
-        guard let session = sessionStore.getSession(forTopic: request.topic), session.acknowledged else {
-            logger.debug("Could not find session for topic \(request.topic)")
-            return
-        }
-        guard session.hasPermission(forMethod: request.method, onChain: request.chainId) else {
-            logger.debug("Invalid namespaces")
-            throw WalletConnectError.invalidPermissions
-        }
-        let chainRequest = SessionType.RequestParams.Request(method: request.method, params: request.params, expiryTimestamp: request.expiryTimestamp)
-        let sessionRequestParams = SessionType.RequestParams(request: chainRequest, chainId: request.chainId)
-        let ttl = try request.calculateTtl()
-        let protocolMethod = SessionRequestProtocolMethod(ttl: ttl)
-        let rpcRequest = RPCRequest(method: protocolMethod.method, params: sessionRequestParams, rpcid: request.id)
-        try await networkingInteractor.request(rpcRequest, topic: request.topic, protocolMethod: SessionRequestProtocolMethod())
-    }
-
-    func respondSessionRequest(topic: String, requestId: RPCID, response: RPCResult) async throws {
-        guard sessionStore.hasSession(forTopic: topic) else {
-            throw WalletConnectError.noSessionMatchingTopic(topic)
-        }
-
-        let protocolMethod = SessionRequestProtocolMethod()
-
-        guard sessionRequestNotExpired(requestId: requestId) else {
-            try await networkingInteractor.respondError(
-                topic: topic,
-                requestId: requestId,
-                protocolMethod: protocolMethod,
-                reason: SignReasonCode.sessionRequestExpired
-            )
-            verifyContextStore.delete(forKey: requestId.string)
-            throw Errors.sessionRequestExpired
-        }
-
-        try await networkingInteractor.respond(
-            topic: topic,
-            response: RPCResponse(id: requestId, outcome: response),
-            protocolMethod: protocolMethod
-        )
-        verifyContextStore.delete(forKey: requestId.string)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-            guard let self = self else {return}
-            sessionRequestsProvider.emitRequestIfPending()
-        }
     }
 
     func emit(topic: String, event: SessionType.EventParams.Event, chainId: Blockchain) async throws {
@@ -192,6 +153,7 @@ private extension SessionEngine {
 
     func setupExpirationSubscriptions() {
         sessionStore.onSessionExpiration = { [weak self] session in
+            self?.historyService.removePendingRequest(topic: session.topic)
             self?.kms.deletePrivateKey(for: session.selfParticipant.publicKey)
             self?.kms.deleteAgreementSecret(for: session.topic)
         }
@@ -202,13 +164,6 @@ private extension SessionEngine {
             guard let self else { return }
             self.onSessionsUpdate?(self.getSessions())
         }
-    }
-
-    func sessionRequestNotExpired(requestId: RPCID) -> Bool {
-        guard let request = historyService.getSessionRequest(id: requestId)?.request
-        else { return false }
-
-        return !request.isExpired()
     }
 
     func respondError(payload: SubscriptionPayload, reason: SignReasonCode, protocolMethod: ProtocolMethod) {
