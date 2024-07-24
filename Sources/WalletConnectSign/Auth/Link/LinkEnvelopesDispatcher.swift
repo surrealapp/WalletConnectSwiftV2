@@ -1,5 +1,8 @@
 
+#if os(iOS)
 import UIKit
+#endif
+
 import Combine
 
 final class LinkEnvelopesDispatcher {
@@ -129,7 +132,7 @@ final class LinkEnvelopesDispatcher {
     }
 
     private func serializeAndCreateUrl(peerUniversalLink: String, encodable: Encodable, envelopeType: Envelope.EnvelopeType, topic: String) throws -> URL {
-        let envelope = try serializer.serialize(topic: topic, encodable: encodable, envelopeType: envelopeType)
+        let envelope = try serializer.serialize(topic: topic, encodable: encodable, envelopeType: envelopeType, codingType: .base64UrlEncoded)
 
         guard var components = URLComponents(string: peerUniversalLink) else { throw URLError(.badURL) }
 
