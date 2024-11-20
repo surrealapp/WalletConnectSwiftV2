@@ -13,21 +13,25 @@
          <array>
              <dict>
                  <key>NSPrivacyCollectedDataType</key>
-                 <string></string>
+                 <string>Location</string> <!-- Example Data Type -->
                  <key>NSPrivacyCollectedDataTypeLinked</key>
                  <false/>
                  <key>NSPrivacyCollectedDataTypeTracking</key>
                  <false/>
                  <key>NSPrivacyCollectedDataTypePurposes</key>
                  <array>
-                     <string></string>
+                     <string>Location-Based Services</string> <!-- Example Purpose -->
                  </array>
              </dict>
          </array>
          <key>NSPrivacyTracking</key>
          <false/>
          <key>NSPrivacyTrackingDomains</key>
-         <array/>
+         <array>
+             <!-- Example tracking domains (add actual domains here) -->
+             <string>example.com</string>
+             <string>ads.example.com</string>
+         </array>
          <key>NSPrivacyAccessedAPITypes</key>
          <array>
              <dict>
@@ -35,17 +39,17 @@
                  <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
                  <key>NSPrivacyAccessedAPITypeReasons</key>
                  <array>
-                     <string>1C8F.1</string>
+                     <string>User Preferences Storage</string> <!-- Example Reason -->
                  </array>
              </dict>
              <dict>
                  <key>NSPrivacyAccessedAPIType</key>
-                 <array/>
+                 <string>NSPrivacyAccessedAPICategoryContacts</string> <!-- Example API Type -->
                  <key>NSPrivacyAccessedAPITypeReasons</key>
                  <array>
-                     <string>0A2A.1</string>
+                     <string>Accessing Contacts for Suggestions</string> <!-- Example Reason -->
                  </array>
              </dict>
          </array>
      </dict>
-     </plist>
+</plist>

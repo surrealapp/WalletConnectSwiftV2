@@ -5,7 +5,7 @@ PrivacyInfo.xcprivacy
 WalletConnect
 
 Created by Alexander Khitev on 11/20/24.
-Copyright (c) 2024 ___ORGANIZATIONNAME___. All rights reserved.
+Copyright (c) 2024 MyOrganization. All rights reserved.
 -->
 <plist version="1.0">
     <dict>
@@ -13,19 +13,17 @@ Copyright (c) 2024 ___ORGANIZATIONNAME___. All rights reserved.
         <array>
             <dict>
                 <key>NSPrivacyCollectedDataType</key>
-                <string></string>
+                <string>ExampleDataType</string>
                 <key>NSPrivacyCollectedDataTypeLinked</key>
                 <false/>
                 <key>NSPrivacyCollectedDataTypeTracking</key>
                 <false/>
                 <key>NSPrivacyCollectedDataTypePurposes</key>
                 <array>
-                    <string></string>
+                    <string>ExamplePurpose</string>
                 </array>
             </dict>
         </array>
-
-
         <key>NSPrivacyTracking</key>
         <false/>
         <key>NSPrivacyTrackingDomains</key>
@@ -42,7 +40,7 @@ Copyright (c) 2024 ___ORGANIZATIONNAME___. All rights reserved.
             </dict>
             <dict>
                 <key>NSPrivacyAccessedAPIType</key>
-                <array/>
+                <string>ExampleAPIType</string>
                 <key>NSPrivacyAccessedAPITypeReasons</key>
                 <array>
                     <string>0A2A.1</string>
