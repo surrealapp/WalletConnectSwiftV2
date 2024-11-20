@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<!--
-PrivacyInfo.xcprivacy
-WalletConnect
-
-Created by Alexander Khitev on 11/20/24.
-Copyright (c) 2024 Surreal. All rights reserved.
--->
 <plist version="1.0">
     <dict>
         <key>NSPrivacyCollectedDataTypes</key>
         <array>
             <dict>
                 <key>NSPrivacyCollectedDataType</key>
-                <string>ExampleDataType</string> <!-- Add meaningful data -->
+                <string>ExampleDataType</string>
                 <key>NSPrivacyCollectedDataTypeLinked</key>
                 <false/>
                 <key>NSPrivacyCollectedDataTypeTracking</key>
                 <false/>
                 <key>NSPrivacyCollectedDataTypePurposes</key>
                 <array>
-                    <string>ExamplePurpose</string> <!-- Add meaningful data -->
+                    <string>ExamplePurpose</string>
                 </array>
             </dict>
         </array>
@@ -28,7 +21,7 @@ Copyright (c) 2024 Surreal. All rights reserved.
         <key>NSPrivacyTracking</key>
         <false/>
         <key>NSPrivacyTrackingDomains</key>
-        <array/> <!-- Empty is valid if there are no tracking domains -->
+        <array/>
 
         <key>NSPrivacyAccessedAPITypes</key>
         <array>
@@ -42,7 +35,7 @@ Copyright (c) 2024 Surreal. All rights reserved.
             </dict>
             <dict>
                 <key>NSPrivacyAccessedAPIType</key>
-                <string>ExampleAPIType</string> <!-- Replace the invalid array with a string -->
+                <string>ExampleAPIType</string>
                 <key>NSPrivacyAccessedAPITypeReasons</key>
                 <array>
                     <string>0A2A.1</string>
@@ -50,4 +43,4 @@ Copyright (c) 2024 Surreal. All rights reserved.
             </dict>
         </array>
     </dict>
-</plist
+</plist>
