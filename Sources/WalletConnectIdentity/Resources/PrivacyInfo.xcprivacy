@@ -13,23 +13,23 @@ Copyright (c) 2024 Surreal. All rights reserved.
         <array>
             <dict>
                 <key>NSPrivacyCollectedDataType</key>
-                <string></string>
+                <string>ExampleDataType</string> <!-- Add meaningful data -->
                 <key>NSPrivacyCollectedDataTypeLinked</key>
                 <false/>
                 <key>NSPrivacyCollectedDataTypeTracking</key>
                 <false/>
                 <key>NSPrivacyCollectedDataTypePurposes</key>
                 <array>
-                    <string></string>
+                    <string>ExamplePurpose</string> <!-- Add meaningful data -->
                 </array>
             </dict>
         </array>
 
-
         <key>NSPrivacyTracking</key>
         <false/>
         <key>NSPrivacyTrackingDomains</key>
-        <array/>
+        <array/> <!-- Empty is valid if there are no tracking domains -->
+
         <key>NSPrivacyAccessedAPITypes</key>
         <array>
             <dict>
@@ -42,7 +42,7 @@ Copyright (c) 2024 Surreal. All rights reserved.
             </dict>
             <dict>
                 <key>NSPrivacyAccessedAPIType</key>
-                <array/>
+                <string>ExampleAPIType</string> <!-- Replace the invalid array with a string -->
                 <key>NSPrivacyAccessedAPITypeReasons</key>
                 <array>
                     <string>0A2A.1</string>
@@ -50,4 +50,4 @@ Copyright (c) 2024 Surreal. All rights reserved.
             </dict>
         </array>
     </dict>
-</plist>
+</plist
