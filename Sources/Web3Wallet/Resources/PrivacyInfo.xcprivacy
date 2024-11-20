@@ -1,58 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<!--
-   PrivacyInfo.xcprivacy
-   WalletConnect
-
-   Created by Alexander Khitev on 11/20/24.
-   Copyright (c) 2024 ___ORGANIZATIONNAME___. All rights reserved.
--->
 <plist version="1.0">
-    <dict>
-        <key>NSPrivacyCollectedDataTypes</key>
-        <array>
-            <dict>
-                <key>NSPrivacyCollectedDataType</key>
-                <string>Location</string> <!-- Example: Data type could be location -->
-                <key>NSPrivacyCollectedDataTypeLinked</key>
-                <false/>
-                <key>NSPrivacyCollectedDataTypeTracking</key>
-                <false/>
-                <key>NSPrivacyCollectedDataTypePurposes</key>
-                <array>
-                    <string>Location-based Services</string> <!-- Example: Purpose could be location-based services -->
-                </array>
-            </dict>
-        </array>
-
-        <key>NSPrivacyTracking</key>
-        <false/>
-
-        <key>NSPrivacyTrackingDomains</key>
-        <array>
-            <!-- Example: List of domains for tracking purposes -->
-            <string>example.com</string>
-            <string>ads.example.com</string>
-        </array>
-
-        <key>NSPrivacyAccessedAPITypes</key>
-        <array>
-            <dict>
-                <key>NSPrivacyAccessedAPIType</key>
-                <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
-                <key>NSPrivacyAccessedAPITypeReasons</key>
-                <array>
-                    <string>User Preferences Storage</string> <!-- Example reason: Storing user preferences -->
-                </array>
-            </dict>
-            <dict>
-                <key>NSPrivacyAccessedAPIType</key>
-                <string>NSPrivacyAccessedAPICategoryContacts</string> <!-- Example: Accessing contacts API -->
-                <key>NSPrivacyAccessedAPITypeReasons</key>
-                <array>
-                    <string>Accessing Contacts for Suggestions</string> <!-- Example reason: Accessing contacts for suggestions -->
-                </array>
-            </dict>
-        </array>
-    </dict>
+<dict>
+	<key>NSPrivacyCollectedDataTypes</key>
+	<array>
+		<dict>
+			<key>NSPrivacyCollectedDataType</key>
+			<string>Location</string>
+			<key>NSPrivacyCollectedDataTypeLinked</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypeTracking</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypePurposes</key>
+			<array>
+				<string>Location-based Services</string>
+			</array>
+		</dict>
+	</array>
+	<key>NSPrivacyTracking</key>
+	<false/>
+	<key>NSPrivacyAccessedAPITypes</key>
+	<array>
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>User Preferences Storage</string>
+			</array>
+		</dict>
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryContacts</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>Accessing Contacts for Suggestions</string>
+			</array>
+		</dict>
+	</array>
+</dict>
 </plist>
