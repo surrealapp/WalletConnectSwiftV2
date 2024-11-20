@@ -4,10 +4,6 @@
 <dict>
 	<key>NSPrivacyTracking</key>
 	<false/>
-	<key>NSPrivacyTrackingDomains</key>
-	<array>
-		<string>ads.trackingdomain.com</string>
-	</array>
 	<key>NSPrivacyCollectedDataTypes</key>
 	<array>
 		<dict>
@@ -44,15 +40,7 @@
 			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
 			<key>NSPrivacyAccessedAPITypeReasons</key>
 			<array>
-				<string>Storing User Preferences</string>
-			</array>
-		</dict>
-		<dict>
-			<key>NSPrivacyAccessedAPIType</key>
-			<string>NSPrivacyAccessedAPICategoryCalendar</string>
-			<key>NSPrivacyAccessedAPITypeReasons</key>
-			<array>
-				<string>Scheduling Events</string>
+				<string>1C8F.1</string>
 			</array>
 		</dict>
 	</array>

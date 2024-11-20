@@ -13,7 +13,7 @@
 			<false/>
 			<key>NSPrivacyCollectedDataTypePurposes</key>
 			<array>
-				<string>Location-based Services</string>
+				<string>NSPrivacyCollectedDataTypePurposeAnalytics</string>
 			</array>
 		</dict>
 	</array>
@@ -26,15 +26,7 @@
 			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
 			<key>NSPrivacyAccessedAPITypeReasons</key>
 			<array>
-				<string>User Preferences Storage</string>
-			</array>
-		</dict>
-		<dict>
-			<key>NSPrivacyAccessedAPIType</key>
-			<string>NSPrivacyAccessedAPICategoryContacts</string>
-			<key>NSPrivacyAccessedAPITypeReasons</key>
-			<array>
-				<string>Accessing Contacts for Suggestions</string>
+				<string>1C8F.1</string>
 			</array>
 		</dict>
 	</array>
